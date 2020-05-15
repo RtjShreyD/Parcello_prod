@@ -2,6 +2,7 @@ import asyncio
 import json
 import time
 import serial
+import threading
 from rtcbot import Websocket, RTCConnection, CVCamera
 
 cam = CVCamera()
@@ -13,6 +14,19 @@ try:
     time.sleep(1)
 except:
     print("Arduino not connected")
+
+
+def ard_snd(msg):
+    try:
+        arduino.write(msg.encode())
+    except:
+        print("Arduino not connected")
+
+
+def resp():
+    while True:
+        data = arduino.readline()
+        print("Response from Arduino is: " + str(data))
 
 
 async def connect():
@@ -28,13 +42,6 @@ async def connect():
     await ws.close()
 
 
-def ard_snd(msg):
-    try:
-        arduino.write(msg.encode())
-    except:
-        print("Arduino not connected")
-
-
 @conn.subscribe
 def onMessage(m):
     print(m)
@@ -42,13 +49,29 @@ def onMessage(m):
         ard_snd("*")
   
 
+
 asyncio.ensure_future(connect())
-try:
-    asyncio.get_event_loop().run_forever()
+loop = asyncio.get_event_loop()
 
-except KeyboardInterrupt:
-    pass
+def start_loop(loop):
+    try:        
+        asyncio.set_event_loop(loop)
+        print("Next stmt loop forever")
+        loop.run_forever()
 
-finally:
-    cam.close()
-    conn.close()
+    except KeyboardInterrupt:
+        pass
+
+    finally:
+        cam.close()
+        conn.close()
+
+
+t1 = threading.Thread(target=start_loop, args=(loop,))
+t1.start()
+
+print("Threaded")
+
+t2 = threading.Thread(target=resp)
+t2.daemon = True
+t2.start()
