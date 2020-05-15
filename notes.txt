@@ -6,3 +6,18 @@ Developing it final for production, lets see how it goes.
        Commands Open/Close reaching the remote.
 
 ###################################################################
+
+
+##################### 16th May 2020, 02:55 ########################
+
+Multi-Threaded asyncio tested successfully. Asyncio Socket-WebRtc running in background  thread t1. 
+Subsequent threads will be used for other processes.
+    **Handling Asyncio with multi-threading has been referenced from StackOverflow link,
+    https://stackoverflow.com/questions/26270681/can-an-asyncio-event-loop-run-in-the-background-without-suspending-the-python-in
+
+Getting response from Arduino, for its GPIO pin state.
+
+TODO: 1. Define a successfull transaction
+      2. Recording 
+
+###################################################################
