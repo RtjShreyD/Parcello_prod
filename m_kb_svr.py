@@ -117,8 +117,8 @@ async def guiHandler(request):
             <br/><br/>
             <button id="open">OPEN</button>
             <br/><br/>
-            <button id="close">CLOSE</button>
-            <br/><br/>
+            <!--<button id="close">CLOSE</button>
+            <br/><br/>--->
             <p>
             Open the browser's developer tools to see console messages (CTRL+SHIFT+C)
             </p>
@@ -138,12 +138,12 @@ async def guiHandler(request):
                     conn.put_nowait("open");
                 })
 
-                const closeBtn = document.getElementById('close');
+                /*const closeBtn = document.getElementById('close');
 
                 closeBtn.addEventListener( 'click', () => {
                     console.log('close');
                     conn.put_nowait("close");
-                })
+                })*/
 
                 async function connect() {
                     let offer = await conn.getLocalDescription();
