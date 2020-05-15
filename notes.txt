@@ -1,0 +1,8 @@
+###################### 15th May 2020, 19:03 #######################
+
+Developing it final for production, lets see how it goes.
+    ** Inital startpoint is rtcbot multi-client server script with modified JS, referenced from Keyboard controller
+       modified its JS with event listener on Buttons for Open/Close. 
+       Commands Open/Close reaching the remote.
+
+###################################################################
