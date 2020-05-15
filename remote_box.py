@@ -1,13 +1,19 @@
 import asyncio
 import json
 import time
+import serial
 from rtcbot import Websocket, RTCConnection, CVCamera
-
-keystates = {"w": False, "a": False, "s": False, "d": False}
 
 cam = CVCamera()
 conn = RTCConnection()
 conn.video.putSubscription(cam)
+
+try:
+    arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout=.1)
+    time.sleep(1)
+except:
+    print("Arduino not connected")
+
 
 async def connect():
     ws = Websocket("http://localhost:8080/xyz")
@@ -22,24 +28,19 @@ async def connect():
     await ws.close()
 
 
+def ard_snd(msg):
+    try:
+        arduino.write(msg.encode())
+    except:
+        print("Arduino not connected")
+
+
 @conn.subscribe
 def onMessage(m):
     print(m)
-    # global keystates
-    # if m["keyCode"] == 87:  # W
-    #     keystates["w"] = m["type"] == "keydown"
-    # elif m["keyCode"] == 83:  # S
-    #     keystates["s"] = m["type"] == "keydown"
-    # elif m["keyCode"] == 65:  # A
-    #     keystates["a"] = m["type"] == "keydown"
-    # elif m["keyCode"] == 68:  # D
-    #     keystates["d"] = m["type"] == "keydown"
-    # print({
-    #         "forward": keystates["w"] * 1 - keystates["s"] * 1,
-    #         "leftright": keystates["d"] * 1 - keystates["a"] * 1,
-    #     })
-
-
+    if m == "open":
+        ard_snd("*")
+  
 
 asyncio.ensure_future(connect())
 try:
