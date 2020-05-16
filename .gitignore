@@ -1,1 +1,4 @@
 config/
+*.pyc
+__pycache__/
+vids/
