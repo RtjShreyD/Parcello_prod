@@ -9,6 +9,9 @@ cam = CVCamera()
 conn = RTCConnection()
 conn.video.putSubscription(cam)
 
+trans = 0
+PS = False
+
 try:
     arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout=.1)
     time.sleep(1)
@@ -24,9 +27,28 @@ def ard_snd(msg):
 
 
 def resp():
+    global PS, trans
+    prev_st = 0
+    curr_st = 0
+
     while True:
         data = arduino.readline()
-        print("Response from Arduino is: " + str(data))
+        if data:
+            temp = data.decode()
+            PS = temp.rstrip()
+            print("PS changed to  " + PS)
+
+            if PS == "True":
+                prev_st = 1
+                curr_st = 1
+
+            if PS == "False" and prev_st == 1:
+                curr_st = 0
+           
+        if prev_st != curr_st:
+            prev_st = 0
+            trans = 1
+            print("Transaction Complete, Ready for another transaction") #Here we can notify the user about a complete transaction
 
 
 async def connect():
