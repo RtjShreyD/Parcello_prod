@@ -17,7 +17,11 @@ Subsequent threads will be used for other processes.
 
 Getting response from Arduino, for its GPIO pin state.
 
-TODO: 1. Define a successfull transaction
+TODO: 1. Define a successfull transaction --> DONE
       2. Recording 
 
 ###################################################################
+
+#################### 17th May 2020, 01:03 #########################
+
+Defined a successfull transaction.
