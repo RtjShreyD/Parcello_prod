@@ -22,10 +22,17 @@ TODO: 1. Define a successfull transaction --> DONE
 
 ###################################################################
 
-#################### 17th May 2020, 01:03 #########################
+#################### 17th May 2020, 05:37 #########################
 
 Defined a successfull transaction.
 install boto3, imutils, JSON_minify via pip
 When Arduino not connected error pops --> sudo chmod a+rw /dev/ttyUSB0
 Recording and Uploading to S3 for once when the video webrtc is ON after transaction gets completed, however in 2nd loop, 
 webrtc needs to be connected again for Recording video again.
+
+TODO: Solve Bugs
+Bug --> socket Connection need to be refreshed after each successfull transaction.
+
+Bug --> socket Connection need to be refreshed after each page refreshed.
+
+###################################################################
