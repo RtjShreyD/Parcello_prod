@@ -2,61 +2,76 @@ import asyncio
 import json
 import time
 from rtcbot import Websocket, RTCConnection, CVCamera
-from threading import Thread
+from threading import Thread, Event
 
 cam = CVCamera()
-conn = RTCConnection()
-conn.video.putSubscription(cam)
+# conn = RTCConnection()
+# conn.video.putSubscription(cam)
 
 class Socketrunthread():
 
-    def __init__(self, loop, conn, cam):
+    def __init__(self, cam, stop_event):
         self.thread = None
-        self.loop = loop
-        self.conn = conn
+        self.conn = RTCConnection()
         self.cam = cam
+        self.stop_event = stop_event
+        self.conn.video.putSubscription(cam)
+
+        asyncio.ensure_future(self.connect())
+        self.loop = asyncio.get_event_loop()
 
     def start(self):
-        self.thread = Thread(target=self.start_loop, args=())
-        self.thread.start()
+        if not self.stop_event:
+            self.thread = Thread(target=self.start_loop, args=())
+            self.thread.start()
 
     def start_loop(self):
         
         try:        
             asyncio.set_event_loop(self.loop)
-            print("Next stmt loop forever")
-            loop.run_forever()
+            # print("Next stmt loop forever")
+            self.loop.run_forever()
+            # print("After run forever")
 
         except KeyboardInterrupt:
             pass           
 
     def finish(self):
-        self.cam.close()
+        # self.cam.close()
         self.conn.close()
+        self.loop.stop()
+        self.stop_event = False
+        self.thread.join()
+        print("Thread stopped")
 
+    async def connect(self):
 
-async def connect():
+        ws = Websocket("http://localhost:8080/xyz")
+        remoteDescription = await ws.get()
+        print("The remote description is of type: " + str(type(remoteDescription)) + "\n" )
 
-    ws = Websocket("http://localhost:8080/xyz")
-    remoteDescription = await ws.get()
-    print("The remote description is of type: " + str(type(remoteDescription)) + "\n" )
+        robotDescription = await self.conn.getLocalDescription(remoteDescription)
+        
+        print("The robot description is of type: " + str(type(robotDescription)) + "\n" )
+        ws.put_nowait(robotDescription)
+        print("Started WebRTC")
+        await ws.close()
 
-    robotDescription = await conn.getLocalDescription(remoteDescription)
-    
-    print("The robot description is of type: " + str(type(robotDescription)) + "\n" )
-    ws.put_nowait(robotDescription)
-    print("Started WebRTC")
-    await ws.close()
+try:
+    t = Socketrunthread(cam, False)
+    t.start()
+    print("Started 1 should work 20 sec")
+    time.sleep(20)
+    t.finish()
+    print("Finish 1 sleep 15")
+    time.sleep(15)
+    t = Socketrunthread(cam, False)
+    t.start()
+    print("Started 2 should work 20 sec")
+    time.sleep(20)
+    t.finish()
+    print("Finish 2 sleep 5")
+    time.sleep(5)
 
-asyncio.ensure_future(connect())
-loop = asyncio.get_event_loop()
-
-t = Socketrunthread(loop, conn, cam)
-t.start()
-print("Going to sleep 40")
-time.sleep(10)
-t.finish()
-print("Going to sleep 10 after finish")
-time.sleep(5)
-print("Starting again try refreshing")
-t.start()
+except KeyboardInterrupt:
+    pass
