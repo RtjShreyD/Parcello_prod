@@ -31,8 +31,23 @@ Recording and Uploading to S3 for once when the video webrtc is ON after transac
 webrtc needs to be connected again for Recording video again.
 
 TODO: Solve Bugs
-Bug --> socket Connection need to be refreshed after each successfull transaction.
+Bug --> Rec only one transaction ------- because trans flag is not being zero again
 
-Bug --> socket Connection need to be refreshed after each page refreshed.
+Bug --> socket Connection need to be refreshed after each successfull transaction. -------- found solution will be addressed.
+
+Bug --> socket Connection need to be refreshed after each page refreshed. --------- No need for change in frontend
 
 ###################################################################
+
+################## 19th May 2020, 03:00 ###########################
+
+Currently in test.py, the complete start and stop control for the Socket and WebRtc Connection thread has been established.
+
+ToDO:
+    1. Socket Connection and WebRtc has to be programmatically stopped and started again at the end of each successfull
+       transaction.
+    2. System to be made dynamic for Recording video only when live feed is accessed and till the transaction completes.
+       And this should run in dynamic loop so that box once switched ON can handle all the transactions in same way.
+    3. Integrate all in remote_box.py
+
+##################################################################
