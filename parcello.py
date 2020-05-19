@@ -1,10 +1,36 @@
-import asyncio
+import cv2
 import json
 import time
-from rtcbot import Websocket, RTCConnection, CVCamera
-from threading import Thread, Event
+import serial
+import imutils
+import asyncio
+import datetime
+from utils.conf import Conf
+from threading import Thread
+from imutils.io import TempFile
+from imutils.video import VideoStream
+from Logix_dir.MotionWriter import KeyClipWriter, Uploader
+from rtcbot import Websocket, RTCConnection, CVCamera, CVDisplay
 
 cam = CVCamera()
+display = CVDisplay()
+# kcw = KeyClipWriter(bufSize=32)
+
+trans = 0
+PS = False # pin state resp from Arduino
+cams = False # flag var for webrtc video started
+
+conf = Conf("config/config.json")
+up = Uploader(conf)
+
+path = ''
+
+try:
+    arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout=.1)
+    time.sleep(1)
+except:
+    print("Arduino not connected")
+
 
 class Socketrunthread():
 
@@ -55,21 +81,50 @@ class Socketrunthread():
         print("Started WebRTC")
         await ws.close()
 
+
+@Socketrunthread.conn.subscribe
+def onMessage(m):
+    print(m)
+    if m == "open":
+        ard_snd("*")
+
+
+def ard_snd(msg):
+    try:
+        arduino.write(msg.encode())
+    except:
+        print("Arduino not connected")
+
+
+def resp():
+    global PS, trans
+    prev_st = 0
+    curr_st = 0
+
+    while True:
+        data = arduino.readline()
+        if data:
+            temp = data.decode()
+            PS = temp.rstrip()
+            print("PS changed to  " + PS)
+
+            if PS == "True":
+                prev_st = 1
+                curr_st = 1
+
+            if PS == "False" and prev_st == 1:
+                curr_st = 0
+           
+        if prev_st != curr_st:
+            prev_st = 0
+            trans = 1
+            cams = False
+            print("Transaction Complete, Ready for another transaction") #Here we can notify the user about a complete transaction
+
+
 try:
     t = Socketrunthread(cam, False)
     t.start()
-    print("Started 1 should work 20 sec")
-    time.sleep(20)
-    t.finish()
-    print("Finish 1 sleep 15")
-    time.sleep(15)
-    t = Socketrunthread(cam, False)
-    t.start()
-    print("Started 2 should work 20 sec")
-    time.sleep(20)
-    t.finish()
-    print("Finish 2 sleep 5")
-    time.sleep(5)
 
 except KeyboardInterrupt:
     pass
