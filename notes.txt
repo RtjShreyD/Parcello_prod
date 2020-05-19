@@ -51,3 +51,14 @@ ToDO:
     3. Integrate all in remote_box.py
 
 ##################################################################
+
+################## 20th May 2020, 04:48 ##########################
+
+All backgroud set for controlling the socket and rtc connection, rec, resp, uploading, ard communication all integrated
+in new file parcello.py, however still the loop asyncio loop is running only once thus other tasks like rec and uploading
+are not efficiently happening, which gave rise to a very severe bug in remote_box.py file, but now a solution approach
+to the bug is in mind and has been partially tested in test.py file. Next task for yesterday's TODO points 1,2,3
+is to pack the flow with global vars in parcello.py to make the flow continous and dynamic.
+
+Resting here,
+##################################################################
