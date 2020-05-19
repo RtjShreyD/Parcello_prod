@@ -14,7 +14,6 @@ from rtcbot import Websocket, RTCConnection, CVCamera, CVDisplay
 
 cam = CVCamera()
 display = CVDisplay()
-# kcw = KeyClipWriter(bufSize=32)
 
 trans = 0
 PS = False # pin state resp from Arduino
@@ -44,10 +43,18 @@ class Socketrunthread():
         asyncio.ensure_future(self.connect())
         self.loop = asyncio.get_event_loop()
 
+
     def start(self):
         if not self.stop_event:
             self.thread = Thread(target=self.start_loop, args=())
             self.thread.start()
+            print("Ok")
+
+            @self.conn.subscribe
+            def OnMessage(m):
+                print(m)
+
+
 
     def start_loop(self):
         
@@ -82,49 +89,16 @@ class Socketrunthread():
         await ws.close()
 
 
-@Socketrunthread.conn.subscribe
-def onMessage(m):
-    print(m)
-    if m == "open":
-        ard_snd("*")
-
-
-def ard_snd(msg):
-    try:
-        arduino.write(msg.encode())
-    except:
-        print("Arduino not connected")
-
-
-def resp():
-    global PS, trans
-    prev_st = 0
-    curr_st = 0
-
-    while True:
-        data = arduino.readline()
-        if data:
-            temp = data.decode()
-            PS = temp.rstrip()
-            print("PS changed to  " + PS)
-
-            if PS == "True":
-                prev_st = 1
-                curr_st = 1
-
-            if PS == "False" and prev_st == 1:
-                curr_st = 0
-           
-        if prev_st != curr_st:
-            prev_st = 0
-            trans = 1
-            cams = False
-            print("Transaction Complete, Ready for another transaction") #Here we can notify the user about a complete transaction
-
 
 try:
     t = Socketrunthread(cam, False)
     t.start()
+    time.sleep(20)
+    t.finish()
+    time.sleep(10)
+    t = Socketrunthread(cam, False)
+    t.start()
+
 
 except KeyboardInterrupt:
     pass
