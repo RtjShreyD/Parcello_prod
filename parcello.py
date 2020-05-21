@@ -77,6 +77,7 @@ def onFrame(frame):
         
     fr = frame
     fr = imutils.resize(fr, width=600)
+    display.put_nowait(frame)
 
     if cams and trans==0:
         
@@ -122,6 +123,8 @@ class Socketrunthread():
                 print(m)
                 if m == "open":
                     ard_snd("*")
+                if m == "end":
+                    self.finish()
 
 
     def start_loop(self):
@@ -133,11 +136,14 @@ class Socketrunthread():
 
 
     def finish(self):
-        self.conn.close()
-        self.loop.stop()
-        self.stop_event = False
-        self.thread.join()
-        print("Thread stopped")
+        try:
+            self.conn.close()
+            self.loop.stop()
+            self.stop_event = False
+            self.thread.join()
+            print("Thread stopped")
+        except RuntimeError:
+            print("Exception Handled successfully")
 
 
     async def connect(self):
@@ -156,28 +162,19 @@ class Socketrunthread():
         await ws.close()
 
 
+
 try:
-    t = Socketrunthread(cam, False)
-    t.start()
 
     t2 = Thread(target=resp)
     t2.daemon = True
     t2.start()
 
-    # if trans == 1:
-    #     t.finish()
-    #     trans = 0
-    #     time.sleep(10)
-    #     t = Socketrunthread(cam, False)
-    #     t.start()
-
-
-    # time.sleep(20)
-    # t.finish()
-    # time.sleep(10)
-    # t = Socketrunthread(cam, False)
-    # t.start()
-
+    while True:
+        t = Socketrunthread(cam, False)
+        t.start()
+        time.sleep(30)
+        t.finish()
+        time.sleep(10)
 
 except KeyboardInterrupt:
     pass

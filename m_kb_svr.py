@@ -117,8 +117,8 @@ async def guiHandler(request):
             <br/><br/>
             <button id="open">OPEN</button>
             <br/><br/>
-            <!--<button id="close">CLOSE</button>
-            <br/><br/>--->
+            <!--<button id="end">END SESSION</button>
+            <br/><br/>-->
             <p>
             Open the browser's developer tools to see console messages (CTRL+SHIFT+C)
             </p>
@@ -138,11 +138,11 @@ async def guiHandler(request):
                     conn.put_nowait("open");
                 })
 
-                /*const closeBtn = document.getElementById('close');
+                /*const endBtn = document.getElementById('end');
 
-                closeBtn.addEventListener( 'click', () => {
-                    console.log('close');
-                    conn.put_nowait("close");
+                endBtn.addEventListener( 'click', () => {
+                    console.log('ending session');
+                    conn.put_nowait("end");
                 })*/
 
                 async function connect() {
