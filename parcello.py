@@ -43,7 +43,7 @@ def ard_snd(msg):
 
 
 def resp():
-    global PS, trans
+    global PS, trans, cams
     prev_st = 0
     curr_st = 0
 
@@ -64,7 +64,9 @@ def resp():
         if prev_st != curr_st:
             prev_st = 0
             trans = 1
+            print("Trans set to :" + str(trans))
             cams = False
+            print("Cams set to :" + str(cams))
             print("Transaction Complete, Ready for another transaction") #Here we can notify the user about a complete transaction
 
 
@@ -82,13 +84,15 @@ def onFrame(frame):
             timestamp = datetime.datetime.now()
             path = "{}/{}.avi".format("vids/", timestamp.strftime("%Y%m%d-%H%M%S"))
             kcw.start(path, cv2.VideoWriter_fourcc(*"MJPG"), 30)
+            print("Inside the if main for rec, cams, trans are " + str(cams) + " ," + str(trans))
         
     kcw.update(fr)  
 
     if kcw.recording and trans == 1: ## For when user opens from webrtc page and box get closed by auto
         print("Rec Stop with transaction Complete" + " " + path)
         kcw.finish()
-        up.send(path)
+        # up.send(path)
+        trans = 0
 
     if kcw.recording:
         print("Rec")
@@ -148,6 +152,7 @@ class Socketrunthread():
         ws.put_nowait(robotDescription)
         print("Started WebRTC")
         cams = True
+        print("Cams set to :" + str(cams))
         await ws.close()
 
 
