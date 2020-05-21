@@ -65,4 +65,14 @@ Resting here,
 
 ################# 22nd May 2020, 01:33 ###########################
 
-I wanna try a bit different move, may be its in the right direction, making a new branch dev
+I wanna try a bit different move, may be its in the right direction, making a new branch dev.
+
+So, the idea to control start and stop of the socket webrtc connection using global variables  goes flop completely. 
+Any external input is required for the session to start and stop or stopping could even be scheduled.
+Session needs to be defined for each WebRtc connection based on any external input that may come from another Socket
+server or MQTT subscription. Simulation may be made by using user input via console but needs to be tested.
+
+TODO: 
+    1. Define a session and session timeout.
+    2. How to start and stop the session, Socket? MQtt?
+    3. Once done, manage the flow.
