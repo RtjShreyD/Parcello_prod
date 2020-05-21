@@ -92,7 +92,7 @@ def onFrame(frame):
     if kcw.recording and trans == 1: ## For when user opens from webrtc page and box get closed by auto
         print("Rec Stop with transaction Complete" + " " + path)
         kcw.finish()
-        # up.send(path)
+        up.send(path)
         trans = 0
 
     if kcw.recording:
@@ -123,8 +123,6 @@ class Socketrunthread():
                 print(m)
                 if m == "open":
                     ard_snd("*")
-                if m == "end":
-                    self.finish()
 
 
     def start_loop(self):
