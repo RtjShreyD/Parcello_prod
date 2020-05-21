@@ -45,10 +45,10 @@ Currently in test.py, the complete start and stop control for the Socket and Web
 
 ToDO:
     1. Socket Connection and WebRtc has to be programmatically stopped and started again at the end of each successfull
-       transaction.
+       transaction. --> DONE
     2. System to be made dynamic for Recording video only when live feed is accessed and till the transaction completes.
-       And this should run in dynamic loop so that box once switched ON can handle all the transactions in same way.
-    3. Integrate all in remote_box.py
+       And this should run in dynamic loop so that box once switched ON can handle all the transactions in same way. --> DONE
+    3. Integrate all in remote_box.py --> Not required, now all in parcello.py
 
 ##################################################################
 
@@ -63,7 +63,7 @@ is to pack the flow with global vars in parcello.py to make the flow continous a
 Resting here,
 ##################################################################
 
-################# 22nd May 2020, 01:33 ###########################
+################# 22nd May 2020, 04:59 ###########################
 
 I wanna try a bit different move, may be its in the right direction, making a new branch dev.
 
@@ -73,6 +73,11 @@ Session needs to be defined for each WebRtc connection based on any external inp
 server or MQTT subscription. Simulation may be made by using user input via console but needs to be tested.
 
 TODO: 
-    1. Define a session and session timeout.
-    2. How to start and stop the session, Socket? MQtt?
-    3. Once done, manage the flow.
+    1. Define a session and session timeout. --> DONE
+    2. How to start and stop the session, Socket? MQtt? --> Still to think over, however hardcoded timeout for start/stop
+       works for now.
+    3. Once done, manage the flow. --> DONE
+    4. Test with AWS uploads also. --> DONE
+
+Resting Here.
+#################################################################
