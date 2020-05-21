@@ -62,3 +62,7 @@ is to pack the flow with global vars in parcello.py to make the flow continous a
 
 Resting here,
 ##################################################################
+
+################# 22nd May 2020, 01:33 ###########################
+
+I wanna try a bit different move, may be its in the right direction, making a new branch dev
